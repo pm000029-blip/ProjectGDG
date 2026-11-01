@@ -1,0 +1,3063 @@
+<!--## 1. Design rationale
+
+The layout moves from a clear “what this community does” message to practical ways to participate: projects, events, sample member stories, and a join invitation. A restrained blue-and-neutral foundation keeps the page readable; the other accent colours appear in the original bracket mark and illustrations. All visuals are inline SVG or CSS, so there are no external image dependencies or borrowed logos.
+
+The hero headline used below is **“Meet your people. Build your skills. Make ideas real.”** Two alternatives: **“From first questions to shipped projects, MMMUT is a place to build together.”** and **“Meet collaborators, practice new tools, and turn campus ideas into working software.”**
+
+## 2. Complete code
+
+### `index.html` -->
+
+
+<!doctype html>
+<html lang="en">
+<head>
+  <style>
+    :root {
+  color-scheme: light;
+  --page-bg: #f6f8fb;
+  --surface: #ffffff;
+  --surface-soft: #eef3f8;
+  --surface-raised: #ffffff;
+  --text: #17263c;
+  --muted: #52657b;
+  --border: #dce4ee;
+  --blue: #155eef;
+  --blue-link: #174ea6;
+  --blue-soft: #e8f0fe;
+  --green: #147a52;
+  --green-soft: #e7f6ee;
+  --red: #b93832;
+  --red-soft: #fff0ee;
+  --yellow-ink: #805600;
+  --yellow-soft: #fff5d9;
+  --focus: #155eef;
+  --hero-bg: #f4f8ff;
+  --cta-bg: #173e74;
+  --shadow-small: 0 5px 18px rgba(24, 43, 68, 0.07);
+  --shadow-card: 0 12px 30px rgba(24, 43, 68, 0.09);
+  --shadow-dialog: 0 25px 80px rgba(6, 17, 33, 0.3);
+  --radius-small: 0.75rem;
+  --radius-medium: 1.1rem;
+  --radius-large: 1.5rem;
+  --radius-pill: 999px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --container-width: 1200px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page-bg: #0c1420;
+  --surface: #121e2c;
+  --surface-soft: #1a293a;
+  --surface-raised: #172536;
+  --text: #f2f6fb;
+  --muted: #bac6d4;
+  --border: #314155;
+  --blue: #155eef;
+  --blue-link: #a8c6ff;
+  --blue-soft: #1b3150;
+  --green: #69c996;
+  --green-soft: #173a2b;
+  --red: #ff8b83;
+  --red-soft: #422522;
+  --yellow-ink: #f0c66b;
+  --yellow-soft: #3b321c;
+  --focus: #a8c6ff;
+  --hero-bg: #101b2b;
+  --cta-bg: #173e74;
+  --shadow-small: 0 5px 18px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.24);
+  --shadow-dialog: 0 25px 80px rgba(0, 0, 0, 0.55);
+}
+
+/* System preference is a CSS fallback until the saved theme is read by JavaScript. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --page-bg: #0c1420;
+    --surface: #121e2c;
+    --surface-soft: #1a293a;
+    --surface-raised: #172536;
+    --text: #f2f6fb;
+    --muted: #bac6d4;
+    --border: #314155;
+    --blue: #155eef;
+    --blue-link: #a8c6ff;
+    --blue-soft: #1b3150;
+    --green: #69c996;
+    --green-soft: #173a2b;
+    --red: #ff8b83;
+    --red-soft: #422522;
+    --yellow-ink: #f0c66b;
+    --yellow-soft: #3b321c;
+    --focus: #a8c6ff;
+    --hero-bg: #101b2b;
+    --cta-bg: #173e74;
+    --shadow-small: 0 5px 18px rgba(0, 0, 0, 0.2);
+    --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.24);
+    --shadow-dialog: 0 25px 80px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* ---------- Base and shared elements ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--page-bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  color: inherit;
+}
+
+a {
+  color: var(--blue-link);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: 0.13em;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.container {
+  width: min(calc(100% - 2rem), var(--container-width));
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: fixed;
+  z-index: 300;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.75rem 1rem;
+  transform: translateY(-160%);
+  border-radius: var(--radius-small);
+  background: var(--text);
+  color: var(--page-bg);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.section-block {
+  padding-block: clamp(4rem, 8vw, 7rem);
+  scroll-margin-top: 6rem;
+}
+
+.section-kicker {
+  margin: 0 0 0.75rem;
+  color: var(--blue-link);
+  font-size: 0.84rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+}
+
+.section-title {
+  max-width: 17ch;
+  margin: 0;
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.section-heading {
+  max-width: 760px;
+  margin-bottom: 2.25rem;
+}
+
+.section-heading--split {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 0.75fr);
+  align-items: end;
+  gap: clamp(1.5rem, 5vw, 4rem);
+}
+
+.section-heading__text {
+  max-width: 48ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+.button {
+  min-height: 2.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: 0.94rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.button--primary {
+  background: var(--blue);
+  color: #ffffff;
+  box-shadow: 0 7px 17px rgba(21, 94, 239, 0.19);
+}
+
+.button--primary:hover {
+  background: #104fce;
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(21, 94, 239, 0.25);
+}
+
+.button--secondary {
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.button--secondary:hover {
+  border-color: var(--blue-link);
+  background: var(--blue-soft);
+  color: var(--text);
+}
+
+.button--small {
+  min-height: 2.55rem;
+  padding: 0.62rem 0.95rem;
+  font-size: 0.88rem;
+}
+
+.button--light {
+  background: #ffffff;
+  color: #173e74;
+}
+
+.button--light:hover {
+  background: #edf3ff;
+  color: #173e74;
+}
+
+.button--outline-light {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: transparent;
+  color: #ffffff;
+}
+
+.button--outline-light:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.icon-button {
+  width: 2.65rem;
+  height: 2.65rem;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.icon-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--blue-link);
+  background: var(--blue-soft);
+}
+
+/* ---------- Header and navigation ---------- */
+.site-header {
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.header-inner {
+  min-height: 4.75rem;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.6rem);
+}
+
+.brand {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.brand:hover {
+  text-decoration: none;
+}
+
+.brand__mark {
+  width: 2.45rem;
+  height: 2.45rem;
+  flex: 0 0 auto;
+}
+
+.brand__name {
+  max-width: 13rem;
+  font-size: 0.92rem;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.brand__name strong {
+  color: var(--blue-link);
+  font-weight: 800;
+}
+
+.primary-navigation {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 1.7vw, 1.35rem);
+  margin-left: auto;
+}
+
+.primary-navigation__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.35rem, 1.15vw, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.5rem;
+  padding: 0.25rem 0.18rem;
+  color: var(--muted);
+  font-size: 0.91rem;
+  font-weight: 620;
+  text-decoration: none;
+}
+
+.nav-link::after {
+  position: absolute;
+  right: 0.15rem;
+  bottom: 0.1rem;
+  left: 0.15rem;
+  height: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  border-radius: var(--radius-pill);
+  background: var(--blue);
+  content: "";
+  transition: transform 180ms ease;
+}
+
+.nav-link:hover,
+.nav-link.is-active {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-link:hover::after,
+.nav-link.is-active::after {
+  transform: scaleX(1);
+}
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.theme-toggle svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.theme-icon--moon {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-icon--sun {
+  display: none;
+}
+
+:root[data-theme="dark"] .theme-icon--moon {
+  display: block;
+}
+
+.menu-toggle {
+  display: none;
+}
+
+.menu-toggle__line {
+  width: 1.05rem;
+  height: 2px;
+  display: block;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+html:not(.js) .theme-toggle {
+  display: none;
+}
+
+/* ---------- Hero ---------- */
+.hero-section {
+  overflow: hidden;
+  padding-block: clamp(3rem, 7vw, 5.4rem) clamp(3rem, 6vw, 4.5rem);
+  background:
+    radial-gradient(circle at 88% 17%, rgba(37, 99, 235, 0.09), transparent 28rem),
+    linear-gradient(180deg, var(--hero-bg), var(--page-bg));
+  scroll-margin-top: 5rem;
+}
+
+.hero-layout {
+  display: grid;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-context {
+  margin: 0 0 1.1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.hero-context span {
+  padding-inline: 0.22rem;
+  color: var(--blue-link);
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  margin: 0 0 0.8rem;
+  color: var(--blue-link);
+  font-size: 0.9rem;
+  font-weight: 750;
+  letter-spacing: 0.025em;
+}
+
+.hero-copy h1 {
+  max-width: 13ch;
+  margin: 0;
+  font-size: clamp(2.65rem, 6.3vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.06em;
+}
+
+.hero-intro {
+  max-width: 55ch;
+  margin: 1.35rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.7rem;
+}
+
+.hero-note {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.hero-visual {
+  width: 100%;
+  max-width: 600px;
+  justify-self: center;
+}
+
+.hero-art {
+  width: 100%;
+  height: auto;
+}
+
+.hero-stats {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.8fr);
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: clamp(2.7rem, 6vw, 4.4rem);
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-stats__heading p {
+  margin: 0;
+  font-weight: 750;
+}
+
+.hero-stats__heading span {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.stats-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat-item {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.stat-item__number {
+  font-size: clamp(1.7rem, 3.7vw, 2.45rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.1;
+}
+
+.stat-item__number--blue {
+  color: var(--blue-link);
+}
+
+.stat-item__number--green {
+  color: var(--green);
+}
+
+.stat-item__number--red {
+  color: var(--red);
+}
+
+.stat-item__label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* ---------- About ---------- */
+.about-section {
+  background: var(--page-bg);
+}
+
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.statement-card {
+  min-width: 0;
+  padding: clamp(1.3rem, 3vw, 2rem);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  box-shadow: var(--shadow-small);
+}
+
+.statement-card--mission {
+  border-top: 4px solid #2563eb;
+}
+
+.statement-card--vision {
+  border-top: 4px solid #15936b;
+}
+
+.statement-card__label {
+  color: var(--blue-link);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.statement-card h3 {
+  max-width: 24ch;
+  margin: 0.65rem 0 0.55rem;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.statement-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.benefits-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  margin: clamp(2.8rem, 6vw, 4rem) 0 1.1rem;
+}
+
+.benefits-heading h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  letter-spacing: -0.025em;
+}
+
+.benefits-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+
+.benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.benefit-card {
+  height: 100%;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  background: var(--surface);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-small);
+}
+
+.benefit-card__icon {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.9rem;
+}
+
+.benefit-card__icon svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.benefit-card__icon--blue {
+  background: var(--blue-soft);
+  color: var(--blue-link);
+}
+
+.benefit-card__icon--green {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.benefit-card__icon--red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.benefit-card__icon--yellow {
+  background: var(--yellow-soft);
+  color: var(--yellow-ink);
+}
+
+.benefit-card h4 {
+  margin: 1rem 0 0.35rem;
+  font-size: 1rem;
+}
+
+.benefit-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.91rem;
+}
+
+/* ---------- Projects ---------- */
+.projects-section {
+  background: var(--surface-soft);
+}
+
+.project-filters {
+  margin: 0 0 1.5rem;
+}
+
+html:not(.js) .project-filters {
+  display: none;
+}
+
+.filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.filter-button {
+  min-height: 2.55rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 680;
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.filter-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--blue-link);
+}
+
+.filter-button.is-selected,
+.filter-button[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1.15rem;
+}
+
+.project-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  box-shadow: var(--shadow-small);
+  transition: opacity 180ms ease, transform 300ms ease, box-shadow 220ms ease;
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.project-card.is-fading-out {
+  opacity: 0;
+  transform: scale(0.97);
+  pointer-events: none;
+}
+
+.project-card.is-entering {
+  opacity: 0;
+  transform: translateY(9px);
+}
+
+.project-card__visual {
+  aspect-ratio: 16 / 10;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.project-card__visual svg {
+  width: 100%;
+  height: 100%;
+}
+
+.project-visual--campus {
+  background: #eaf1ff;
+}
+
+.project-visual--study {
+  background: #fff5dc;
+}
+
+.project-visual--attendance {
+  background: #e7f6ee;
+}
+
+.project-visual--bot {
+  background: #fff0ee;
+}
+
+.project-visual--cloud {
+  background: #eaf1ff;
+}
+
+.project-visual--arena {
+  background: #f1edff;
+}
+
+.project-card__body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.15rem;
+}
+
+.project-card__category {
+  margin: 0 0 0.45rem;
+  color: var(--blue-link);
+  font-size: 0.77rem;
+  font-weight: 750;
+}
+
+.project-card__body h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.project-card__body > p:not(.project-card__category) {
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+
+.tech-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tech-list li {
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+
+.project-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding-top: 1.15rem;
+  color: var(--blue-link);
+  font-size: 0.86rem;
+  font-weight: 720;
+  text-decoration: none;
+}
+
+.project-card__link:hover {
+  text-decoration: underline;
+}
+
+html.has-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 560ms ease, transform 560ms ease;
+}
+
+html.has-reveal [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+html.has-reveal .project-card[data-reveal] {
+  transition: opacity 180ms ease, transform 300ms ease, box-shadow 220ms ease;
+}
+
+/* ---------- Events ---------- */
+.events-section {
+  background: var(--page-bg);
+}
+
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+
+.event-card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  box-shadow: var(--shadow-small);
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.event-card:hover,
+.event-card:focus-within {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card);
+}
+
+.event-art {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.event-art svg {
+  width: 100%;
+  height: 100%;
+}
+
+.event-art--cloud {
+  background: #eaf1ff;
+}
+
+.event-art--hack {
+  background: #242a50;
+}
+
+.event-art--flutter {
+  background: #e7f6ee;
+}
+
+.event-art--git {
+  background: #fff5dc;
+}
+
+.event-card__body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(1rem, 2vw, 1.35rem);
+}
+
+.event-card__topline {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.event-type,
+.sample-date-label,
+.sample-label {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-pill);
+  background: var(--blue-soft);
+  color: var(--blue-link);
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.event-type--red {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.event-type--green {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.event-type--yellow,
+.sample-date-label {
+  background: var(--yellow-soft);
+  color: var(--yellow-ink);
+}
+
+.event-date {
+  margin-top: 0.7rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.event-card h3 {
+  margin: 0.3rem 0 0;
+  font-size: clamp(1.15rem, 2vw, 1.35rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.event-location {
+  margin: 0.45rem 0 0;
+  color: var(--blue-link);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.inline-link {
+  color: inherit;
+}
+
+.event-description {
+  margin: 0.75rem 0 1rem;
+  color: var(--muted);
+  font-size: 0.91rem;
+}
+
+.event-action {
+  width: 100%;
+  margin-top: auto;
+  font-size: 0.86rem;
+}
+
+/* ---------- Testimonials and FAQ ---------- */
+.community-section {
+  background: var(--surface-soft);
+}
+
+.community-section .section-heading {
+  margin-bottom: 2.2rem;
+}
+
+.community-section .section-heading__text {
+  margin-top: 0.9rem;
+}
+
+.community-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 4rem);
+}
+
+.subsection-title {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.025em;
+}
+
+.testimonial-list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.testimonial-card {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  background: var(--surface);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-small);
+}
+
+.sample-label {
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.testimonial-card blockquote {
+  margin: 0.7rem 0 0;
+}
+
+.testimonial-card blockquote p {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.94rem;
+}
+
+.testimonial-card blockquote footer {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.testimonial-card cite {
+  font-style: normal;
+}
+
+.faq-list {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-medium);
+  background: var(--surface);
+}
+
+.faq-item + .faq-item {
+  border-top: 1px solid var(--border);
+}
+
+.faq-item h4 {
+  margin: 0;
+}
+
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 0.94rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.faq-question:hover {
+  background: var(--surface-soft);
+}
+
+.faq-question__icon {
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  color: var(--blue-link);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.faq-question[aria-expanded="true"] .faq-question__icon {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  padding: 0 1.1rem 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.faq-answer p {
+  margin: 0;
+}
+
+/* ---------- Join panel and footer ---------- */
+.join-section {
+  padding-block: clamp(3.5rem, 7vw, 5.5rem);
+  background: var(--page-bg);
+  scroll-margin-top: 6rem;
+}
+
+.join-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(240px, 0.75fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border-radius: var(--radius-large);
+  background:
+    radial-gradient(circle at 92% 12%, rgba(255, 255, 255, 0.13), transparent 17rem),
+    var(--cta-bg);
+  color: #ffffff;
+  box-shadow: var(--shadow-card);
+}
+
+.section-kicker--light {
+  color: #dce8ff;
+}
+
+.join-panel h2 {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.3rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.join-panel__copy > p:last-child {
+  max-width: 55ch;
+  margin: 1rem 0 0;
+  color: #e2eaf6;
+}
+
+.join-panel__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.join-panel__social {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.join-panel__note {
+  margin: 0.25rem 0 0;
+  color: #d7e2f0;
+  font-size: 0.76rem;
+}
+
+.site-footer {
+  padding-block: 3.2rem 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: minmax(230px, 1.55fr) repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+.brand--footer {
+  margin-bottom: 0.55rem;
+}
+
+.footer-tagline {
+  margin: 0.55rem 0 0;
+  color: var(--blue-link);
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.footer-description {
+  max-width: 38ch;
+  margin: 0.55rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.footer-links h2 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0.85rem;
+  font-size: 0.95rem;
+}
+
+.footer-links ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links li,
+.footer-links a {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.footer-links a:hover {
+  color: var(--blue-link);
+}
+
+.footer-contact .sample-label {
+  font-size: 0.65rem;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem 1.5rem;
+  margin-top: 2.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+.footer-disclaimer {
+  max-width: 65ch;
+}
+
+/* ---------- Demo registration dialog ---------- */
+.event-dialog {
+  width: min(calc(100% - 1.5rem), 560px);
+  max-width: 560px;
+  max-height: min(90vh, 850px);
+  overflow: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-dialog);
+}
+
+.event-dialog::backdrop {
+  background: rgba(7, 16, 30, 0.66);
+  backdrop-filter: blur(3px);
+}
+
+.event-dialog__content {
+  position: relative;
+  padding: clamp(1.25rem, 5vw, 2.2rem);
+}
+
+.event-dialog__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.event-dialog__close svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.event-dialog h2 {
+  max-width: 18ch;
+  margin: 0;
+  padding-right: 2rem;
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+.event-dialog__content > p:not(.section-kicker) {
+  color: var(--muted);
+}
+
+.demo-form-note {
+  margin: 1rem 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: var(--radius-small);
+  background: var(--yellow-soft);
+  color: var(--yellow-ink) !important;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.demo-form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.demo-form label {
+  margin-top: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.demo-form input {
+  width: 100%;
+  min-height: 2.8rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-small);
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+.demo-form input[readonly] {
+  background: var(--surface-soft);
+}
+
+.demo-form .button {
+  margin-top: 0.65rem;
+}
+
+.demo-form__status {
+  min-height: 1.5rem;
+  margin: 0;
+  color: var(--green);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+/* ---------- Responsive layouts ---------- */
+@media (max-width: 860px) {
+  .header-inner {
+    min-height: 4.35rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.4rem 0.8rem;
+    padding-block: 0.55rem;
+  }
+
+  .brand__name {
+    font-size: 0.88rem;
+  }
+
+  .header-tools {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .primary-navigation {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 0.9rem 0 0.35rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .primary-navigation__list {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .nav-link {
+    min-height: 2.65rem;
+    padding-inline: 0.45rem;
+  }
+
+  .nav-link::after {
+    right: auto;
+    left: 0.45rem;
+    width: 2.2rem;
+  }
+
+  .nav-join {
+    width: 100%;
+  }
+
+  html.js .primary-navigation {
+    display: none;
+  }
+
+  html.js .primary-navigation.is-open {
+    display: flex;
+  }
+
+  html.js .menu-toggle {
+    display: inline-grid;
+    gap: 4px;
+    align-content: center;
+  }
+
+  html:not(.js) .primary-navigation {
+    display: flex;
+  }
+}
+
+@media (min-width: 600px) {
+  .benefit-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .event-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 760px) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .project-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .footer-grid {
+    grid-template-columns: minmax(230px, 1.55fr) repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .benefit-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .event-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .event-card__topline {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 700px) {
+  .section-heading--split {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 0.9rem;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .mission-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .community-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .join-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .join-panel__actions {
+    align-items: stretch;
+  }
+
+  .join-panel__actions .button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 599px) {
+  .project-grid,
+  .event-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefit-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 1rem;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 360px) {
+  .container {
+    width: min(calc(100% - 1.5rem), var(--container-width));
+  }
+
+  .brand {
+    gap: 0.4rem;
+  }
+
+  .brand__mark {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  .brand__name {
+    font-size: 0.81rem;
+  }
+
+  .header-tools {
+    gap: 0.35rem;
+  }
+
+  .icon-button {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+
+  .hero-copy h1 {
+    font-size: clamp(2.35rem, 12vw, 2.75rem);
+  }
+
+  .stats-list {
+    gap: 0.4rem;
+  }
+
+  .stat-item__label {
+    font-size: 0.82rem;
+  }
+}
+
+  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Connect. Learn. Grow. A student-led developer community at Madan Mohan Malaviya University of Technology, Gorakhpur—workshops, mentorship, projects and campus tech events.">
+  <meta name="theme-color" content="#f6f8fb">
+  <title>Google Developer Groups on Campus MMMUT | Student Developer Community</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#home" aria-label="Google Developer Groups on Campus MMMUT — home">
+        <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <path d="M16 7 7 20" fill="none" stroke="#2563eb" stroke-width="3.6" stroke-linecap="round"/>
+          <path d="M7 20 16 33" fill="none" stroke="#15936b" stroke-width="3.6" stroke-linecap="round"/>
+          <path d="M24 7 33 20" fill="none" stroke="#e5a400" stroke-width="3.6" stroke-linecap="round"/>
+          <path d="M33 20 24 33" fill="none" stroke="#d84b45" stroke-width="3.6" stroke-linecap="round"/>
+        </svg>
+        <span class="brand__name">GDG on Campus <strong>MMMUT</strong></span>
+      </a>
+
+      <nav class="primary-navigation" id="primary-navigation" aria-label="Primary navigation">
+        <ul class="primary-navigation__list">
+          <li><a class="nav-link is-active" href="#home" data-nav-target="home" aria-current="location">Home</a></li>
+          <li><a class="nav-link" href="#about" data-nav-target="about">About</a></li>
+          <li><a class="nav-link" href="#projects" data-nav-target="projects">Projects</a></li>
+          <li><a class="nav-link" href="#events" data-nav-target="events">Events</a></li>
+          <li><a class="nav-link" href="#contact" data-nav-target="contact">Contact</a></li>
+        </ul>
+        <a class="button button--primary button--small nav-join" href="#contact">
+          Join Community <span aria-hidden="true">↗</span>
+        </a>
+      </nav>
+
+      <div class="header-tools">
+        <button class="icon-button theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch theme">
+          <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="3.7" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M12 2.5v2.1M12 19.4v2.1M4.3 4.3l1.5 1.5m12.4 12.4 1.5 1.5M2.5 12h2.1m14.8 0h2.1M4.3 19.7l1.5-1.5M18.2 5.8l1.5-1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+          <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20.3 15.1A8.3 8.3 0 0 1 8.9 3.7 8.7 8.7 0 1 0 20.3 15.1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button class="icon-button menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false" aria-label="Open navigation menu">
+          <span class="menu-toggle__line"></span>
+          <span class="menu-toggle__line"></span>
+          <span class="menu-toggle__line"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero-section" id="home" aria-labelledby="hero-title">
+      <div class="container">
+        <div class="hero-layout">
+          <div class="hero-copy" data-reveal>
+            <p class="hero-context">Student-led community <span aria-hidden="true">·</span> MMMUT, Gorakhpur</p>
+            <p class="hero-eyebrow">Connect. Learn. Grow.</p>
+            <h1 id="hero-title">Meet your people. Build your skills. Make ideas real.</h1>
+            <p class="hero-intro">
+              A welcoming place to turn lab questions, hostel whiteboard ideas and weekend builds
+              into practical tech skills, useful projects and new friendships.
+            </p>
+            <div class="hero-actions">
+              <a class="button button--primary" href="#contact">
+                Join the Community <span aria-hidden="true">↗</span>
+              </a>
+              <a class="button button--secondary" href="#events">
+                Explore Events <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+            <p class="hero-note">New to coding? You’re welcome here, too.</p>
+          </div>
+
+          <div class="hero-visual" data-reveal>
+            <svg class="hero-art" viewBox="0 0 620 500" role="img" aria-labelledby="hero-art-title hero-art-description">
+              <title id="hero-art-title">Students building a campus project together</title>
+              <desc id="hero-art-description">An original illustration of a project dashboard, code editor and friendly student avatars.</desc>
+              <defs>
+                <linearGradient id="hero-halo" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#e9f1ff"/>
+                  <stop offset="1" stop-color="#e5f7ef"/>
+                </linearGradient>
+                <filter id="hero-shadow" x="-20%" y="-20%" width="140%" height="150%">
+                  <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#26374d" flood-opacity=".12"/>
+                </filter>
+              </defs>
+
+              <circle cx="314" cy="248" r="217" fill="url(#hero-halo)"/>
+              <circle cx="495" cy="91" r="34" fill="#fff1cf"/>
+              <circle cx="109" cy="379" r="24" fill="#fce5e4"/>
+              <path d="M71 123c25-36 64-49 93-37" fill="none" stroke="#b7c9e8" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
+              <path d="M497 351c28-6 49-23 63-48" fill="none" stroke="#b4ddc8" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 10"/>
+
+              <g filter="url(#hero-shadow)">
+                <rect x="91" y="69" width="425" height="323" rx="25" fill="#ffffff" stroke="#dce5f0" stroke-width="2"/>
+                <path d="M116 69h375a25 25 0 0 1 25 25v35H91V94a25 25 0 0 1 25-25Z" fill="#f7f9fc"/>
+                <circle cx="118" cy="100" r="5" fill="#d84b45"/>
+                <circle cx="137" cy="100" r="5" fill="#e5a400"/>
+                <circle cx="156" cy="100" r="5" fill="#15936b"/>
+                <rect x="188" y="93" width="175" height="13" rx="6.5" fill="#e2e8f0"/>
+
+                <rect x="112" y="147" width="106" height="218" rx="13" fill="#f4f7fb"/>
+                <circle cx="138" cy="174" r="11" fill="#d9e6fb"/>
+                <rect x="157" y="169" width="43" height="9" rx="4.5" fill="#9aabc0"/>
+                <rect x="128" y="202" width="70" height="7" rx="3.5" fill="#c9d4e1"/>
+                <rect x="128" y="220" width="52" height="7" rx="3.5" fill="#d7e0e9"/>
+                <rect x="128" y="249" width="70" height="26" rx="8" fill="#e6efff"/>
+                <circle cx="141" cy="262" r="5" fill="#2563eb"/>
+                <rect x="153" y="258" width="32" height="7" rx="3.5" fill="#7a97c2"/>
+                <rect x="128" y="289" width="62" height="7" rx="3.5" fill="#c9d4e1"/>
+                <rect x="128" y="307" width="47" height="7" rx="3.5" fill="#d7e0e9"/>
+                <rect x="128" y="334" width="71" height="7" rx="3.5" fill="#d7e0e9"/>
+
+                <rect x="238" y="147" width="253" height="129" rx="14" fill="#f8fafc" stroke="#e3eaf2"/>
+                <rect x="257" y="165" width="88" height="9" rx="4.5" fill="#9aabc0"/>
+                <rect x="257" y="187" width="151" height="8" rx="4" fill="#d5e2f8"/>
+                <rect x="257" y="205" width="201" height="8" rx="4" fill="#c8e9d7"/>
+                <rect x="257" y="223" width="120" height="8" rx="4" fill="#f3d4a0"/>
+                <rect x="257" y="241" width="174" height="8" rx="4" fill="#e7c9c7"/>
+                <circle cx="468" cy="170" r="5" fill="#15936b"/>
+
+                <rect x="238" y="294" width="150" height="70" rx="13" fill="#eaf2ff"/>
+                <path d="M261 337v-19m17 19v-30m17 30v-24m17 24v-12m17 12v-35" fill="none" stroke="#2563eb" stroke-width="7" stroke-linecap="round"/>
+                <rect x="403" y="294" width="88" height="70" rx="13" fill="#f0f8f3"/>
+                <circle cx="447" cy="324" r="15" fill="#d1eddd"/>
+                <path d="m440 324 5 5 10-12" fill="none" stroke="#15936b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="429" y="346" width="36" height="6" rx="3" fill="#9cb6a5"/>
+              </g>
+
+              <g filter="url(#hero-shadow)">
+                <rect x="389" y="35" width="146" height="61" rx="17" fill="#ffffff" stroke="#e0e8f1"/>
+                <circle cx="415" cy="65" r="13" fill="#ffe2df"/>
+                <path d="M407 69c2-7 14-7 16 0" fill="#d84b45"/>
+                <circle cx="415" cy="61" r="4" fill="#bd625b"/>
+                <rect x="439" y="55" width="75" height="8" rx="4" fill="#64748b"/>
+                <rect x="439" y="70" width="51" height="6" rx="3" fill="#bdcad8"/>
+              </g>
+
+              <g filter="url(#hero-shadow)">
+                <rect x="45" y="293" width="145" height="70" rx="17" fill="#ffffff" stroke="#e0e8f1"/>
+                <circle cx="71" cy="327" r="15" fill="#e5f3eb"/>
+                <path d="M62 332c2-8 16-8 18 0" fill="#15936b"/>
+                <circle cx="71" cy="323" r="4" fill="#4e9a71"/>
+                <rect x="94" y="315" width="75" height="8" rx="4" fill="#64748b"/>
+                <rect x="94" y="331" width="54" height="6" rx="3" fill="#bdcad8"/>
+              </g>
+
+              <circle cx="537" cy="208" r="9" fill="#2563eb"/>
+              <circle cx="76" cy="214" r="7" fill="#e5a400"/>
+              <path d="m542 415 9 9 18-20" fill="none" stroke="#15936b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="hero-stats" data-reveal>
+          <div class="hero-stats__heading">
+            <p>Illustrative community snapshot</p>
+            <span>Example figures — replace with verified numbers before launch.</span>
+          </div>
+          <ul class="stats-list" aria-label="Illustrative community metrics">
+            <li class="stat-item">
+              <span class="stat-item__number stat-item__number--blue" data-counter data-target="650" data-suffix="+">650+</span>
+              <span class="stat-item__label">members</span>
+            </li>
+            <li class="stat-item">
+              <span class="stat-item__number stat-item__number--green" data-counter data-target="24" data-suffix="+">24+</span>
+              <span class="stat-item__label">projects</span>
+            </li>
+            <li class="stat-item">
+              <span class="stat-item__number stat-item__number--red" data-counter data-target="38" data-suffix="+">38+</span>
+              <span class="stat-item__label">events</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block about-section" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="section-heading section-heading--split" data-reveal>
+          <div>
+            <p class="section-kicker">About the community</p>
+            <h2 class="section-title" id="about-title">A place to learn by building, together.</h2>
+          </div>
+          <p class="section-heading__text">
+            We’re a student-led tech community at MMMUT. We make it easier to try a new tool,
+            ask a question without judgment, find teammates and take an idea beyond the classroom.
+          </p>
+        </div>
+
+        <div class="mission-grid">
+          <article class="statement-card statement-card--mission" data-reveal>
+            <span class="statement-card__label">Our mission</span>
+            <h3>Make practical tech learning easier to start.</h3>
+            <p>
+              Host approachable sessions, share what students are learning and create room to
+              practise through small, useful projects.
+            </p>
+          </article>
+          <article class="statement-card statement-card--vision" data-reveal>
+            <span class="statement-card__label">Our vision</span>
+            <h3>A campus where curiosity has a team behind it.</h3>
+            <p>
+              Help students across years and branches find mentors, collaborators and confidence
+              to contribute to the technology around them.
+            </p>
+          </article>
+        </div>
+
+        <div class="benefits-heading" data-reveal>
+          <h3>What you can expect</h3>
+          <p>Small steps count — from your first Git command to a project you can show.</p>
+        </div>
+
+        <ul class="benefit-grid">
+          <li>
+            <article class="benefit-card" data-reveal>
+              <span class="benefit-card__icon benefit-card__icon--blue">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <rect x="3.5" y="4.5" width="17" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 20h8m-4-3.5V20m-4-11 2.5 2.5L8 14m5-5h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <h4>Hands-on workshops</h4>
+              <p>Learn by trying the tools, not just watching slides.</p>
+            </article>
+          </li>
+          <li>
+            <article class="benefit-card" data-reveal>
+              <span class="benefit-card__icon benefit-card__icon--green">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <circle cx="9" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M3.5 19c.6-3.2 2.4-5 5.5-5s4.9 1.8 5.5 5m2-11.5a2.5 2.5 0 0 1 0 5m1 2c1.7.5 2.8 1.7 3.2 3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <h4>Senior mentorship</h4>
+              <p>Get help with the first steps, stuck bugs and next goals.</p>
+            </article>
+          </li>
+          <li>
+            <article class="benefit-card" data-reveal>
+              <span class="benefit-card__icon benefit-card__icon--red">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M4 7.5h6l2 2h8v9H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                  <path d="M4 7.5V5h6l2 2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                  <path d="m9 14 2 2 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <h4>Real project experience</h4>
+              <p>Work with a team, make decisions and finish something useful.</p>
+            </article>
+          </li>
+          <li>
+            <article class="benefit-card" data-reveal>
+              <span class="benefit-card__icon benefit-card__icon--yellow">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M15.5 7H19v3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <h4>Career readiness</h4>
+              <p>Build confidence with collaboration, demos and a portfolio of work.</p>
+            </article>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section-block projects-section" id="projects" aria-labelledby="projects-title">
+      <div class="container">
+        <div class="section-heading section-heading--split" data-reveal>
+          <div>
+            <p class="section-kicker">Student project ideas</p>
+            <h2 class="section-title" id="projects-title">Small ideas. Useful things.</h2>
+          </div>
+          <p class="section-heading__text">
+            These sample concepts reflect problems students might meet around campus.
+            Replace them with your team’s real work before publishing.
+          </p>
+        </div>
+
+        <div class="project-filters" aria-label="Project category filters">
+          <div class="filter-controls" role="group" aria-label="Filter projects by category">
+            <button class="filter-button is-selected" type="button" data-filter="all" aria-pressed="true">All</button>
+            <button class="filter-button" type="button" data-filter="web" aria-pressed="false">Web</button>
+            <button class="filter-button" type="button" data-filter="ai-ml" aria-pressed="false">AI-ML</button>
+            <button class="filter-button" type="button" data-filter="mobile" aria-pressed="false">Mobile</button>
+            <button class="filter-button" type="button" data-filter="cloud" aria-pressed="false">Cloud</button>
+          </div>
+          <p class="sr-only" id="project-filter-status" aria-live="polite" aria-atomic="true"></p>
+        </div>
+
+        <div class="project-grid" id="project-grid">
+          <article class="project-card" data-category="mobile" data-reveal>
+            <div class="project-card__visual project-visual--campus" role="img" aria-label="Illustration of a campus map and event notice app">
+              <svg viewBox="0 0 320 200" aria-hidden="true" focusable="false">
+                <rect width="320" height="200" rx="18" fill="#eaf1ff"/>
+                <path d="M0 145 80 99l48 18 67-68 42 20 83-49v180H0Z" fill="#dce8fa"/>
+                <path d="M45 168c38-35 55-24 84-54s57-20 83-51 43-19 72-38" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>
+                <path d="M45 168c38-35 55-24 84-54s57-20 83-51 43-19 72-38" fill="none" stroke="#8aa7d5" stroke-width="2" stroke-linecap="round" stroke-dasharray="5 7"/>
+                <rect x="67" y="28" width="186" height="142" rx="18" fill="#fff" stroke="#cbd8eb" stroke-width="2"/>
+                <rect x="84" y="44" width="67" height="9" rx="4.5" fill="#66788e"/>
+                <rect x="84" y="62" width="150" height="48" rx="9" fill="#f2f6fb"/>
+                <path d="M110 100c0-13 10-22 22-22s22 9 22 22c0 15-22 31-22 31s-22-16-22-31Z" fill="#2563eb"/>
+                <circle cx="132" cy="99" r="6" fill="#fff"/>
+                <rect x="84" y="124" width="86" height="8" rx="4" fill="#d1dce9"/>
+                <rect x="84" y="142" width="58" height="8" rx="4" fill="#c2d7ff"/>
+                <circle cx="227" cy="143" r="14" fill="#e3f4e9"/>
+                <path d="m221 143 4 4 8-9" fill="none" stroke="#15936b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__category">Mobile</p>
+              <h3>Campus Connect</h3>
+              <p>A single place for fest schedules, club notices and campus updates.</p>
+              <ul class="tech-list" aria-label="Technologies">
+                <li>Flutter</li><li>Firebase</li>
+              </ul>
+              <a class="project-card__link" href="#contact" aria-label="Talk about a project like Campus Connect">
+                Talk about a similar idea <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="web" data-reveal>
+            <div class="project-card__visual project-visual--study" role="img" aria-label="Illustration of a notes and past-question paper library">
+              <svg viewBox="0 0 320 200" aria-hidden="true" focusable="false">
+                <rect width="320" height="200" rx="18" fill="#fff5dc"/>
+                <circle cx="270" cy="43" r="19" fill="#ffe8a9"/>
+                <rect x="72" y="29" width="178" height="143" rx="15" fill="#fff" stroke="#eadbb7" stroke-width="2"/>
+                <path d="M160 44v112" stroke="#e7d8b7" stroke-width="2"/>
+                <path d="M82 45c22-8 46-7 69 2v102c-22-9-46-10-69-2Zm156 0c-22-8-46-7-69 2v102c22-9 46-10 69-2Z" fill="#fffdf8" stroke="#eadbb7" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M100 68h37m-37 16h43m-43 16h34m-34 16h40m-40 16h28M180 68h37m-37 16h43m-43 16h34m-34 16h40m-40 16h28" fill="none" stroke="#97a6b5" stroke-width="4" stroke-linecap="round"/>
+                <path d="M118 61h13" stroke="#2563eb" stroke-width="5" stroke-linecap="round"/>
+                <path d="M190 61h21" stroke="#15936b" stroke-width="5" stroke-linecap="round"/>
+                <rect x="39" y="139" width="43" height="17" rx="8.5" fill="#dce9ff"/>
+                <rect x="238" y="54" width="45" height="17" rx="8.5" fill="#e3f4e9"/>
+              </svg>
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__category">Web</p>
+              <h3>StudyVault</h3>
+              <p>A notes and PYQ portal that makes useful study material easier to find.</p>
+              <ul class="tech-list" aria-label="Technologies">
+                <li>HTML</li><li>CSS</li><li>JavaScript</li><li>Node.js</li>
+              </ul>
+              <a class="project-card__link" href="#contact" aria-label="Talk about a project like StudyVault">
+                Talk about a similar idea <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="web" data-reveal>
+            <div class="project-card__visual project-visual--attendance" role="img" aria-label="Illustration of a QR attendance check-in screen">
+              <svg viewBox="0 0 320 200" aria-hidden="true" focusable="false">
+                <rect width="320" height="200" rx="18" fill="#e7f6ee"/>
+                <circle cx="60" cy="42" r="22" fill="#d1eddd"/>
+                <circle cx="265" cy="159" r="26" fill="#d1eddd"/>
+                <rect x="103" y="18" width="114" height="166" rx="22" fill="#26374d"/>
+                <rect x="111" y="29" width="98" height="143" rx="15" fill="#fff"/>
+                <rect x="145" y="23" width="30" height="4" rx="2" fill="#aebdca"/>
+                <rect x="124" y="45" width="72" height="8" rx="4" fill="#718196"/>
+                <rect x="129" y="66" width="62" height="62" rx="7" fill="#f2f7f3"/>
+                <path d="M137 74h16v16h-16zm30 0h16v16h-16zm-30 30h16v16h-16zm29-1h8v8h-8zm9 9h8v8h-8z" fill="#26374d"/>
+                <path d="M156 74h7v7h-7zm-19 29h7v7h-7z" fill="#15936b"/>
+                <circle cx="160" cy="146" r="10" fill="#dff3e7"/>
+                <path d="m155 146 3 3 7-7" fill="none" stroke="#15936b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="232" y="51" width="52" height="21" rx="10.5" fill="#fff"/>
+                <path d="m244 61 4 4 8-9" fill="none" stroke="#15936b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__category">Web</p>
+              <h3>AttendEase</h3>
+              <p>A simple QR attendance tracker for sessions, labs and club meetups.</p>
+              <ul class="tech-list" aria-label="Technologies">
+                <li>Python</li><li>Flask</li><li>SQLite</li>
+              </ul>
+              <a class="project-card__link" href="#contact" aria-label="Talk about a project like AttendEase">
+                Talk about a similar idea <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="ai-ml" data-reveal>
+            <div class="project-card__visual project-visual--bot" role="img" aria-label="Illustration of a feedback chat assistant">
+              <svg viewBox="0 0 320 200" aria-hidden="true" focusable="false">
+                <rect width="320" height="200" rx="18" fill="#fff0ee"/>
+                <circle cx="255" cy="49" r="33" fill="#ffe0dc"/>
+                <rect x="47" y="36" width="210" height="131" rx="19" fill="#fff" stroke="#efd5d2" stroke-width="2"/>
+                <rect x="67" y="54" width="116" height="11" rx="5.5" fill="#687a8f"/>
+                <rect x="67" y="78" width="148" height="35" rx="12" fill="#f2f5f9"/>
+                <circle cx="83" cy="95" r="6" fill="#d84b45"/>
+                <rect x="96" y="91" width="103" height="7" rx="3.5" fill="#bdc9d7"/>
+                <rect x="100" y="121" width="138" height="28" rx="12" fill="#e8f0fe"/>
+                <rect x="117" y="132" width="95" height="7" rx="3.5" fill="#8ca9d4"/>
+                <path d="M69 132h14" stroke="#e5a400" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="244" cy="143" r="22" fill="#d84b45"/>
+                <path d="M235 143h18m-9-9v18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="68" cy="149" r="4" fill="#e5a400"/>
+              </svg>
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__category">AI-ML</p>
+              <h3>Hostel Mess Feedback Bot</h3>
+              <p>A feedback helper that looks for common themes in mess comments.</p>
+              <ul class="tech-list" aria-label="Technologies">
+                <li>Python</li><li>NLP</li>
+              </ul>
+              <a class="project-card__link" href="#contact" aria-label="Talk about a project like Hostel Mess Feedback Bot">
+                Talk about a similar idea <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="cloud" data-reveal>
+            <div class="project-card__visual project-visual--cloud" role="img" aria-label="Illustration of a cloud deployment pipeline">
+              <svg viewBox="0 0 320 200" aria-hidden="true" focusable="false">
+                <rect width="320" height="200" rx="18" fill="#eaf1ff"/>
+                <circle cx="254" cy="42" r="23" fill="#dce8fa"/>
+                <rect x="48" y="50" width="82" height="103" rx="13" fill="#fff" stroke="#cbd8eb" stroke-width="2"/>
+                <rect x="67" y="69" width="44" height="10" rx="5" fill="#8ca9d4"/>
+                <rect x="66" y="91" width="46" height="7" rx="3.5" fill="#d0dbea"/>
+                <rect x="66" y="107" width="37" height="7" rx="3.5" fill="#d0dbea"/>
+                <rect x="66" y="128" width="44" height="9" rx="4.5" fill="#e6f4eb"/>
+                <path d="M139 101h38" stroke="#899db6" stroke-width="4" stroke-linecap="round"/>
+                <path d="m169 91 11 10-11 10" fill="none" stroke="#899db6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M217 131h53a24 24 0 0 0 0-48 35 35 0 0 0-67-4 27 27 0 0 0 14 52Z" fill="#fff" stroke="#b7c9e8" stroke-width="2"/>
+                <path d="m222 105 12 12 25-27" fill="none" stroke="#15936b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="181" y="151" width="86" height="10" rx="5" fill="#cce8d7"/>
+                <circle cx="281" cy="153" r="6" fill="#15936b"/>
+              </svg>
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__category">Cloud</p>
+              <h3>Cloud Deploy Lab</h3>
+              <p>A guided sandbox for packaging an app and practising a cloud deployment.</p>
+              <ul class="tech-list" aria-label="Technologies">
+                <li>Google Cloud</li><li>Docker</li>
+              </ul>
+              <a class="project-card__link" href="#contact" aria-label="Talk about a project like Cloud Deploy Lab">
+                Talk about a similar idea <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+
+          <article class="project-card" data-category="web" data-reveal>
+            <div class="project-card__visual project-visual--arena" role="img" aria-label="Illustration of a coding contest leaderboard">
+              <svg viewBox="0 0 320 200" aria-hidden="true" focusable="false">
+                <rect width="320" height="200" rx="18" fill="#f1edff"/>
+                <rect x="47" y="29" width="226" height="143" rx="16" fill="#fff" stroke="#ded7f3" stroke-width="2"/>
+                <path d="M47 47a18 18 0 0 1 18-18h190a18 18 0 0 1 18 18v15H47Z" fill="#f7f5fd"/>
+                <circle cx="67" cy="46" r="4" fill="#d84b45"/>
+                <circle cx="82" cy="46" r="4" fill="#e5a400"/>
+                <circle cx="97" cy="46" r="4" fill="#15936b"/>
+                <path d="m81 83-13 11 13 11m18-22 13 11-13 11m26 2 9-26" fill="none" stroke="#596b82" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="162" y="79" width="83" height="7" rx="3.5" fill="#d5dce8"/>
+                <rect x="162" y="95" width="64" height="7" rx="3.5" fill="#e1e6ee"/>
+                <path d="M65 132h190" stroke="#e8edf3" stroke-width="2"/>
+                <circle cx="82" cy="151" r="9" fill="#fff0ce"/>
+                <path d="M79 151h6m-3-3v6" stroke="#a66b00" stroke-width="1.8" stroke-linecap="round"/>
+                <rect x="103" y="147" width="93" height="7" rx="3.5" fill="#bdc9d7"/>
+                <rect x="218" y="145" width="28" height="12" rx="6" fill="#e6f4eb"/>
+              </svg>
+            </div>
+            <div class="project-card__body">
+              <p class="project-card__category">Web</p>
+              <h3>Code Arena</h3>
+              <p>A contest platform concept for campus coding rounds and leaderboards.</p>
+              <ul class="tech-list" aria-label="Technologies">
+                <li>JavaScript</li><li>Express</li>
+              </ul>
+              <a class="project-card__link" href="#contact" aria-label="Talk about a project like Code Arena">
+                Talk about a similar idea <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block events-section" id="events" aria-labelledby="events-title">
+      <div class="container">
+        <div class="section-heading section-heading--split" data-reveal>
+          <div>
+            <p class="section-kicker">Meet, make and learn</p>
+            <h2 class="section-title" id="events-title">A reason to get together.</h2>
+          </div>
+          <p class="section-heading__text">
+            Sample schedule — every date below is fictional and shown as a future placeholder.
+            Event buttons open a local demo form, not a real registration.
+          </p>
+        </div>
+
+        <div class="event-grid">
+          <article class="event-card" data-reveal>
+            <div class="event-art event-art--cloud" role="img" aria-label="Poster-style illustration of a cloud workshop with a rising cloud shape">
+              <svg viewBox="0 0 360 210" aria-hidden="true" focusable="false">
+                <rect width="360" height="210" rx="18" fill="#eaf1ff"/>
+                <circle cx="295" cy="46" r="47" fill="#d9e7ff"/>
+                <path d="M0 178c54-22 77-15 122-37s78-8 118-34 78-22 120-8v111H0Z" fill="#d7e8f7"/>
+                <path d="M114 135h126a35 35 0 0 0 0-70 50 50 0 0 0-97-12 39 39 0 0 0-29 82Z" fill="#fff" stroke="#b9cce9" stroke-width="3"/>
+                <path d="M155 119V85m0 0-13 13m13-13 13 13m26 21V72m0 0-13 13m13-13 13 13" fill="none" stroke="#2563eb" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="32" y="33" width="63" height="12" rx="6" fill="#2563eb" opacity=".8"/>
+                <circle cx="49" cy="157" r="8" fill="#e5a400"/>
+                <circle cx="302" cy="154" r="7" fill="#15936b"/>
+              </svg>
+            </div>
+            <div class="event-card__body">
+              <div class="event-card__topline">
+                <span class="event-type">Workshop</span>
+                <span class="sample-date-label">Fictional date</span>
+              </div>
+              <time class="event-date" datetime="2027-02-21">21 Feb 2027</time>
+              <h3>Study Jam: Intro to Google Cloud</h3>
+              <p class="event-location">CS Dept. seminar hall</p>
+              <p class="event-description">Try core cloud concepts with beginner-friendly demos and guided practice.</p>
+              <button class="button button--secondary event-action" type="button" data-open-event
+                data-event-title="Study Jam: Intro to Google Cloud"
+                data-event-date="21 February 2027"
+                data-event-location="CS Dept. seminar hall"
+                data-event-description="A beginner-friendly cloud session with short demos and guided practice."
+                aria-label="Open demo registration for Study Jam: Intro to Google Cloud">
+                Register / Learn more <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="event-card" data-reveal>
+            <div class="event-art event-art--hack" role="img" aria-label="Poster-style illustration of a hackathon with a lightning bolt and project tiles">
+              <svg viewBox="0 0 360 210" aria-hidden="true" focusable="false">
+                <rect width="360" height="210" rx="18" fill="#242a50"/>
+                <circle cx="286" cy="44" r="52" fill="#343c70"/>
+                <circle cx="58" cy="168" r="48" fill="#303861"/>
+                <path d="m185 38-48 76h38l-11 57 66-87h-41l18-46Z" fill="#ffcf55"/>
+                <rect x="34" y="34" width="70" height="12" rx="6" fill="#b9c4ff"/>
+                <rect x="249" y="129" width="69" height="10" rx="5" fill="#8793d4"/>
+                <rect x="258" y="148" width="49" height="10" rx="5" fill="#6673bd"/>
+                <circle cx="77" cy="79" r="7" fill="#f27a74"/>
+                <circle cx="302" cy="81" r="6" fill="#6bd1a0"/>
+                <path d="M87 125h36m-18-18v36" stroke="#aeb8f4" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="event-card__body">
+              <div class="event-card__topline">
+                <span class="event-type event-type--red">Hackathon</span>
+                <span class="sample-date-label">Fictional date</span>
+              </div>
+              <time class="event-date" datetime="2027-03-06">06 Mar 2027</time>
+              <h3>HackMMMUT 24-hour Hackathon</h3>
+              <p class="event-location">Main auditorium</p>
+              <p class="event-description">Form a team, choose a problem and spend a day making a first prototype.</p>
+              <button class="button button--secondary event-action" type="button" data-open-event
+                data-event-title="HackMMMUT 24-hour Hackathon"
+                data-event-date="06 March 2027"
+                data-event-location="Main auditorium"
+                data-event-description="A sample 24-hour campus hackathon for teams to prototype a solution."
+                aria-label="Open demo registration for HackMMMUT 24-hour Hackathon">
+                Register / Learn more <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="event-card" data-reveal>
+            <div class="event-art event-art--flutter" role="img" aria-label="Poster-style illustration of a mobile app session with a phone and forward arrow">
+              <svg viewBox="0 0 360 210" aria-hidden="true" focusable="false">
+                <rect width="360" height="210" rx="18" fill="#e7f6ee"/>
+                <circle cx="278" cy="51" r="54" fill="#d2efdf"/>
+                <rect x="61" y="27" width="98" height="157" rx="21" fill="#26374d"/>
+                <rect x="69" y="38" width="82" height="135" rx="14" fill="#fff"/>
+                <rect x="95" y="33" width="30" height="4" rx="2" fill="#9aabc0"/>
+                <circle cx="110" cy="85" r="24" fill="#e6f4eb"/>
+                <path d="m101 83 9-14 9 14-9 14Z" fill="#15936b"/>
+                <rect x="84" y="119" width="52" height="7" rx="3.5" fill="#9aabc0"/>
+                <rect x="89" y="135" width="42" height="7" rx="3.5" fill="#d3dde8"/>
+                <path d="M190 106h100m-28-28 28 28-28 28" fill="none" stroke="#15936b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="258" cy="166" r="7" fill="#2563eb"/>
+                <circle cx="210" cy="48" r="6" fill="#e5a400"/>
+              </svg>
+            </div>
+            <div class="event-card__body">
+              <div class="event-card__topline">
+                <span class="event-type event-type--green">Talk</span>
+                <span class="sample-date-label">Fictional date</span>
+              </div>
+              <time class="event-date" datetime="2027-03-20">20 Mar 2027</time>
+              <h3>Flutter Forward Session</h3>
+              <p class="event-location">
+                Online ·
+                <a class="inline-link" href="https://meet.google.com/" target="_blank" rel="noopener noreferrer">
+                  Open demo Meet link
+                </a>
+              </p>
+              <p class="event-description">See how a mobile UI takes shape, then bring your questions to the discussion.</p>
+              <button class="button button--secondary event-action" type="button" data-open-event
+                data-event-title="Flutter Forward Session"
+                data-event-date="20 March 2027"
+                data-event-location="Online"
+                data-event-description="A sample online talk about building mobile interfaces with Flutter."
+                aria-label="Open demo registration for Flutter Forward Session">
+                Register / Learn more <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="event-card" data-reveal>
+            <div class="event-art event-art--git" role="img" aria-label="Poster-style illustration of a Git branch diagram and code collaboration">
+              <svg viewBox="0 0 360 210" aria-hidden="true" focusable="false">
+                <rect width="360" height="210" rx="18" fill="#fff5dc"/>
+                <circle cx="293" cy="49" r="37" fill="#ffe8a9"/>
+                <path d="M96 49v108m0-77c0 31 79 12 79 45v38m0-82c0 30 79 14 79 47" fill="none" stroke="#687a8f" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="96" cy="49" r="14" fill="#fff" stroke="#2563eb" stroke-width="5"/>
+                <circle cx="96" cy="80" r="11" fill="#fff" stroke="#15936b" stroke-width="5"/>
+                <circle cx="96" cy="157" r="14" fill="#fff" stroke="#d84b45" stroke-width="5"/>
+                <circle cx="175" cy="125" r="12" fill="#fff" stroke="#e5a400" stroke-width="5"/>
+                <circle cx="175" cy="163" r="12" fill="#fff" stroke="#2563eb" stroke-width="5"/>
+                <circle cx="254" cy="134" r="13" fill="#fff" stroke="#15936b" stroke-width="5"/>
+                <rect x="42" y="178" width="77" height="9" rx="4.5" fill="#d4c5a2"/>
+                <rect x="222" y="37" width="81" height="10" rx="5" fill="#d4c5a2"/>
+                <path d="m278 89 8 8 16-18" fill="none" stroke="#15936b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="event-card__body">
+              <div class="event-card__topline">
+                <span class="event-type event-type--yellow">Hands-on</span>
+                <span class="sample-date-label">Fictional date</span>
+              </div>
+              <time class="event-date" datetime="2027-04-03">03 Apr 2027</time>
+              <h3>Git and GitHub for Beginners</h3>
+              <p class="event-location">Computer lab</p>
+              <p class="event-description">Practise commits, branches and collaboration with a small guided exercise.</p>
+              <button class="button button--secondary event-action" type="button" data-open-event
+                data-event-title="Git and GitHub for Beginners"
+                data-event-date="03 April 2027"
+                data-event-location="Computer lab"
+                data-event-description="A practical introduction to commits, branches and working together with Git."
+                aria-label="Open demo registration for Git and GitHub for Beginners">
+                Register / Learn more <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block community-section" aria-labelledby="community-title">
+      <div class="container">
+        <div class="section-heading" data-reveal>
+          <p class="section-kicker">People make the community</p>
+          <h2 class="section-title" id="community-title">Learn with people who are figuring it out, too.</h2>
+          <p class="section-heading__text">
+            The quotes below are fictional sample content for this concept design, not real member testimonials.
+          </p>
+        </div>
+
+        <div class="community-grid">
+          <div class="testimonial-group" aria-labelledby="testimonial-heading">
+            <h3 class="subsection-title" id="testimonial-heading">Sample member stories</h3>
+            <div class="testimonial-list">
+              <article class="testimonial-card" data-reveal>
+                <span class="sample-label">Fictional sample</span>
+                <blockquote>
+                  <p>“I was unsure where to begin with Git. Practising in a small group made the first project feel possible.”</p>
+                  <footer><cite>Ananya · 2nd-year CSE</cite></footer>
+                </blockquote>
+              </article>
+              <article class="testimonial-card" data-reveal>
+                <span class="sample-label">Fictional sample</span>
+                <blockquote>
+                  <p>“A workshop gave our hostel idea a shape. We left with a plan, teammates and a first screen to build.”</p>
+                  <footer><cite>Rishabh · 1st-year IT</cite></footer>
+                </blockquote>
+              </article>
+              <article class="testimonial-card" data-reveal>
+                <span class="sample-label">Fictional sample</span>
+                <blockquote>
+                  <p>“I learned as much from showing an unfinished demo as I did from the code itself.”</p>
+                  <footer><cite>Sana · 3rd-year ECE</cite></footer>
+                </blockquote>
+              </article>
+            </div>
+          </div>
+
+          <div class="faq-group" aria-labelledby="faq-heading">
+            <h3 class="subsection-title" id="faq-heading">Questions, answered</h3>
+            <div class="faq-list">
+              <article class="faq-item">
+                <h4>
+                  <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-1">
+                    Who can join?
+                    <span class="faq-question__icon" aria-hidden="true">+</span>
+                  </button>
+                </h4>
+                <div class="faq-answer" id="faq-answer-1" hidden>
+                  <p>MMMUT students interested in technology, design or building with others are welcome. Check the real community’s current joining details before publishing.</p>
+                </div>
+              </article>
+
+              <article class="faq-item">
+                <h4>
+                  <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-2">
+                    Is it free?
+                    <span class="faq-question__icon" aria-hidden="true">+</span>
+                  </button>
+                </h4>
+                <div class="faq-answer" id="faq-answer-2" hidden>
+                  <p>This concept assumes open, no-cost participation. Confirm any actual event or membership conditions with the organizers.</p>
+                </div>
+              </article>
+
+              <article class="faq-item">
+                <h4>
+                  <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-3">
+                    Do I need prior experience?
+                    <span class="faq-question__icon" aria-hidden="true">+</span>
+                  </button>
+                </h4>
+                <div class="faq-answer" id="faq-answer-3" hidden>
+                  <p>No. Beginner-friendly sessions are a good place to start, and asking questions is part of learning.</p>
+                </div>
+              </article>
+
+              <article class="faq-item">
+                <h4>
+                  <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-4">
+                    How often are events?
+                    <span class="faq-question__icon" aria-hidden="true">+</span>
+                  </button>
+                </h4>
+                <div class="faq-answer" id="faq-answer-4" hidden>
+                  <p>The schedule depends on the student team and campus calendar. Follow the community’s real channels for confirmed dates.</p>
+                </div>
+              </article>
+
+              <article class="faq-item">
+                <h4>
+                  <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-answer-5">
+                    How do I become a core team member?
+                    <span class="faq-question__icon" aria-hidden="true">+</span>
+                  </button>
+                </h4>
+                <div class="faq-answer" id="faq-answer-5" hidden>
+                  <p>Show up, volunteer for a small task and ask the organizers about their current team-selection process.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="join-section" id="contact" aria-labelledby="join-title">
+      <div class="container">
+        <div class="join-panel" data-reveal>
+          <div class="join-panel__copy">
+            <p class="section-kicker section-kicker--light">Your next step starts here</p>
+            <h2 id="join-title">Bring your next idea out of the notebook.</h2>
+            <p>
+              Join a session, meet a teammate or start with a question. There’s room for first-years,
+              first projects and ideas that are still taking shape.
+            </p>
+          </div>
+          <div class="join-panel__actions">
+            <a class="button button--light" href="mailto:mmmutdsc@gmail.com">
+              Join the Community <span aria-hidden="true">↗</span>
+            </a>
+            <a class="button button--outline-light" href="#events">Attend an event</a>
+            <a class="join-panel__social" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">
+              Follow updates on LinkedIn <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="event-dialog" id="event-dialog" aria-labelledby="event-dialog-title" aria-describedby="event-dialog-description">
+    <div class="event-dialog__content">
+      <button class="icon-button event-dialog__close" type="button" aria-label="Close demo registration">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <p class="section-kicker">Demo registration</p>
+      <h2 id="event-dialog-title">Event interest</h2>
+      <p id="event-dialog-description">This local demo does not send information to a server.</p>
+      <p class="demo-form-note">Demo form - no data is actually sent.</p>
+
+      <form class="demo-form" id="demo-registration-form" method="dialog" aria-label="Demo form - no data is actually sent">
+        <label for="demo-event-name">Event</label>
+        <input id="demo-event-name" name="event" type="text" readonly>
+
+        <label for="demo-attendee-name">Your name</label>
+        <input id="demo-attendee-name" name="name" type="text" autocomplete="name" required>
+
+        <label for="demo-attendee-email">Email address</label>
+        <input id="demo-attendee-email" name="email" type="email" autocomplete="email" required>
+
+        <button class="button button--primary" type="submit">Save demo interest</button>
+        <p class="demo-form__status" id="demo-form-status" aria-live="polite" aria-atomic="true"></p>
+      </form>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand brand--footer" href="#home" aria-label="Google Developer Groups on Campus MMMUT — home">
+            <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+              <path d="M16 7 7 20" fill="none" stroke="#2563eb" stroke-width="3.6" stroke-linecap="round"/>
+              <path d="M7 20 16 33" fill="none" stroke="#15936b" stroke-width="3.6" stroke-linecap="round"/>
+              <path d="M24 7 33 20" fill="none" stroke="#e5a400" stroke-width="3.6" stroke-linecap="round"/>
+              <path d="M33 20 24 33" fill="none" stroke="#d84b45" stroke-width="3.6" stroke-linecap="round"/>
+            </svg>
+            <span class="brand__name">GDG on Campus <strong>MMMUT</strong></span>
+          </a>
+          <p class="footer-tagline">Connect. Learn. Grow.</p>
+          <p class="footer-description">
+            A student-led developer community concept for curious builders at Madan Mohan Malaviya
+            University of Technology, Gorakhpur.
+          </p>
+        </div>
+
+        <nav class="footer-links" aria-label="Footer quick links">
+          <h2>Quick links</h2>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer-links">
+          <h2>Find us</h2>
+          <ul>
+            <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn  <span aria-hidden="true">↗</span></a></li>
+            <li><a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer">Instagram  <span aria-hidden="true">↗</span></a></li>
+            <li><a href="https://github.com/" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links footer-contact">
+          <h2>Contact </h2>
+          <ul>
+            <li><a href="mailto:mmmutdsc@gmail.com">mmmutdsc@gmail.com</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 GDG on Campus MMMUT · Concept page</p>
+        <p class="footer-disclaimer">Unofficial concept design created for a university competition. Not affiliated with Google.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
+```
+
+<!--### `style.css`
+
+```css
+/* ---------- Design tokens ---------- */-->
+
+/* ---------- Motion preferences ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+<!--### `script.js`
+
+```javascript
+(() => {
+  "use strict"; -->
+<script>
+  const root = document.documentElement;
+  root.classList.add("js");
+
+  const motionPreference = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)")
+    : { matches: false };
+  const prefersReducedMotion = motionPreference.matches;
+
+  // Read a saved theme safely. If there is none, use the system preference.
+  let savedTheme = null;
+  try {
+    savedTheme = window.localStorage.getItem("gdg-mmmut-theme");
+  } catch (error) {
+    savedTheme = null;
+  }
+
+  const systemPrefersDark = window.matchMedia
+    ? window.matchMedia("(prefers-color-scheme: dark)").matches
+    : false;
+
+  const initialTheme =
+    savedTheme === "light" || savedTheme === "dark"
+      ? savedTheme
+      : systemPrefersDark
+        ? "dark"
+        : "light";
+
+  root.dataset.theme = initialTheme;
+
+  // Theme toggle
+  const themeButton = document.querySelector(".theme-toggle");
+
+  function updateThemeButton() {
+    if (!themeButton) return;
+
+    const isDark = root.dataset.theme === "dark";
+    themeButton.setAttribute("aria-pressed", String(isDark));
+    themeButton.setAttribute(
+      "aria-label",
+      isDark ? "Switch to light theme" : "Switch to dark theme"
+    );
+    themeButton.title = isDark ? "Switch to light theme" : "Switch to dark theme";
+  }
+
+  updateThemeButton();
+
+  if (themeButton) {
+    themeButton.addEventListener("click", () => {
+      const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+      root.dataset.theme = nextTheme;
+      updateThemeButton();
+
+      try {
+        window.localStorage.setItem("gdg-mmmut-theme", nextTheme);
+      } catch (error) {
+        // The toggle still works for this page view if storage is unavailable.
+      }
+    });
+  }
+
+  // Responsive navigation: keep the button state and menu state in sync.
+  const siteHeader = document.querySelector(".site-header");
+  const menuButton = document.querySelector(".menu-toggle");
+  const navigation = document.querySelector("#primary-navigation");
+
+  function setMenuOpen(isOpen, returnFocus = false) {
+    if (!menuButton || !navigation) return;
+
+    navigation.classList.toggle("is-open", isOpen);
+    menuButton.setAttribute("aria-expanded", String(isOpen));
+    menuButton.setAttribute(
+      "aria-label",
+      isOpen ? "Close navigation menu" : "Open navigation menu"
+    );
+
+    if (!isOpen && returnFocus) {
+      menuButton.focus();
+    }
+  }
+
+  if (menuButton && navigation) {
+    menuButton.addEventListener("click", () => {
+      const isOpen = menuButton.getAttribute("aria-expanded") === "true";
+      setMenuOpen(!isOpen);
+    });
+
+    navigation.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => setMenuOpen(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        event.key === "Escape" &&
+        menuButton.getAttribute("aria-expanded") === "true"
+      ) {
+        setMenuOpen(false, true);
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      const menuIsOpen = menuButton.getAttribute("aria-expanded") === "true";
+      if (menuIsOpen && siteHeader && !siteHeader.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.matchMedia("(min-width: 861px)").matches) {
+        setMenuOpen(false);
+      }
+    });
+  }
+
+  // Highlight the navigation item for the section currently in view.
+  const navLinks = Array.from(document.querySelectorAll("[data-nav-target]"));
+  const navSections = navLinks
+    .map((link) => document.getElementById(link.dataset.navTarget))
+    .filter(Boolean);
+
+  function setActiveNavigation(sectionId) {
+    navLinks.forEach((link) => {
+      const isActive = link.dataset.navTarget === sectionId;
+      link.classList.toggle("is-active", isActive);
+
+      if (isActive) {
+        link.setAttribute("aria-current", "location");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  if ("IntersectionObserver" in window && navSections.length > 0) {
+    const navigationObserver = new IntersectionObserver(
+      (entries) => {
+        const visibleSections = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (first, second) =>
+              first.boundingClientRect.top - second.boundingClientRect.top
+          );
+
+        if (visibleSections.length > 0) {
+          setActiveNavigation(visibleSections[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-20% 0px -68% 0px",
+        threshold: 0
+      }
+    );
+
+    navSections.forEach((section) => navigationObserver.observe(section));
+  }
+
+  // Reveal content only when the observer is available and motion is allowed.
+  // Without JavaScript, or with reduced motion, the content stays visible.
+  const revealItems = document.querySelectorAll("[data-reveal]");
+
+  if (
+    !prefersReducedMotion &&
+    "IntersectionObserver" in window &&
+    revealItems.length > 0
+  ) {
+    root.classList.add("has-reveal");
+
+    const revealObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -28px 0px"
+      }
+    );
+
+    revealItems.forEach((item) => revealObserver.observe(item));
+  }
+
+  // Animate each counter once, when its stats strip enters the viewport.
+  const counters = Array.from(document.querySelectorAll("[data-counter]"));
+
+  function getCounterFinalText(counter) {
+    const target = Number(counter.dataset.target || 0);
+    const suffix = counter.dataset.suffix || "";
+    return `${new Intl.NumberFormat().format(target)}${suffix}`;
+  }
+
+  if (
+    prefersReducedMotion ||
+    !("IntersectionObserver" in window) ||
+    counters.length === 0
+  ) {
+    counters.forEach((counter) => {
+      counter.textContent = getCounterFinalText(counter);
+    });
+  } else {
+    counters.forEach((counter) => {
+      counter.textContent = `0${counter.dataset.suffix || ""}`;
+    });
+
+    const counterObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const counter = entry.target;
+          const target = Number(counter.dataset.target || 0);
+          const suffix = counter.dataset.suffix || "";
+          const duration = 1300;
+          let startTime = null;
+
+          function drawCounter(timestamp) {
+            if (startTime === null) startTime = timestamp;
+
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const easedProgress = 1 - Math.pow(1 - progress, 3);
+            const currentValue = Math.round(target * easedProgress);
+
+            counter.textContent =
+              `${new Intl.NumberFormat().format(currentValue)}${suffix}`;
+
+            if (progress < 1) {
+              window.requestAnimationFrame(drawCounter);
+            } else {
+              counter.textContent = getCounterFinalText(counter);
+            }
+          }
+
+          window.requestAnimationFrame(drawCounter);
+          observer.unobserve(counter);
+        });
+      },
+      { threshold: 0.45 }
+    );
+
+    counters.forEach((counter) => counterObserver.observe(counter));
+  }
+
+  // Project category filters. FLIP-style position animation softens grid reflow.
+  const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+  const projectCards = Array.from(document.querySelectorAll(".project-card"));
+  const projectGrid = document.querySelector("#project-grid");
+  const filterStatus = document.querySelector("#project-filter-status");
+
+  let appliedFilter = "all";
+  let pendingFilter = null;
+  let filterTimer = null;
+
+  const filterLabels = {
+    all: "all",
+    web: "web",
+    "ai-ml": "AI-ML",
+    mobile: "mobile",
+    cloud: "cloud"
+  };
+
+  function cardMatchesFilter(card, category) {
+    return category === "all" || card.dataset.category === category;
+  }
+
+  function updateFilterStatus(category) {
+    if (!filterStatus) return;
+
+    const count = projectCards.filter((card) => !card.hidden).length;
+    const label = filterLabels[category] || category;
+    const noun = count === 1 ? "project" : "projects";
+    filterStatus.textContent = `Showing ${count} ${label} ${noun}.`;
+  }
+
+  function clearProjectAnimation(card) {
+    card.classList.remove("is-fading-out", "is-entering");
+    card.style.removeProperty("transform");
+    card.style.removeProperty("transition");
+  }
+
+  function finishFilterImmediately(category) {
+    if (filterTimer !== null) {
+      window.clearTimeout(filterTimer);
+      filterTimer = null;
+    }
+
+    projectCards.forEach((card) => {
+      const shouldShow = cardMatchesFilter(card, category);
+      card.hidden = !shouldShow;
+      clearProjectAnimation(card);
+
+      if (shouldShow) {
+        card.classList.add("is-visible");
+      }
+    });
+
+    appliedFilter = category;
+    pendingFilter = null;
+    updateFilterStatus(category);
+  }
+
+  function selectProjectFilter(category) {
+    filterButtons.forEach((button) => {
+      const isSelected = button.dataset.filter === category;
+      button.setAttribute("aria-pressed", String(isSelected));
+      button.classList.toggle("is-selected", isSelected);
+    });
+
+    // Finish an in-progress transition before starting another filter.
+    if (pendingFilter !== null) {
+      finishFilterImmediately(pendingFilter);
+    }
+
+    if (category === appliedFilter) {
+      updateFilterStatus(category);
+      return;
+    }
+
+    const currentlyVisible = projectCards.filter((card) => !card.hidden);
+    const firstPositions = new Map(
+      currentlyVisible.map((card) => [card, card.getBoundingClientRect()])
+    );
+
+    const leavingCards = currentlyVisible.filter(
+      (card) => !cardMatchesFilter(card, category)
+    );
+    const enteringCards = projectCards.filter(
+      (card) => card.hidden && cardMatchesFilter(card, category)
+    );
+
+    if (prefersReducedMotion) {
+      finishFilterImmediately(category);
+      return;
+    }
+
+    leavingCards.forEach((card) => card.classList.add("is-fading-out"));
+    pendingFilter = category;
+
+    function finishAnimatedFilter() {
+      if (pendingFilter !== category) return;
+
+      filterTimer = null;
+      const newlyShownCards = [];
+
+      projectCards.forEach((card) => {
+        const shouldShow = cardMatchesFilter(card, category);
+
+        if (!shouldShow) {
+          card.hidden = true;
+          clearProjectAnimation(card);
+          return;
+        }
+
+        const wasHidden = card.hidden;
+        card.hidden = false;
+
+        if (wasHidden) {
+          card.classList.add("is-visible", "is-entering");
+          newlyShownCards.push(card);
+        }
+      });
+
+      const cardsToMove = [];
+
+      projectCards.forEach((card) => {
+        if (card.hidden || !firstPositions.has(card)) return;
+
+        const first = firstPositions.get(card);
+        const last = card.getBoundingClientRect();
+        const xOffset = first.left - last.left;
+        const yOffset = first.top - last.top;
+
+        if (Math.abs(xOffset) > 1 || Math.abs(yOffset) > 1) {
+          card.style.transition = "none";
+          card.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+          cardsToMove.push(card);
+        }
+      });
+
+      // Force layout so the browser records each card's starting position.
+      if (projectGrid) void projectGrid.offsetHeight;
+
+      window.requestAnimationFrame(() => {
+        cardsToMove.forEach((card) => {
+          card.style.removeProperty("transition");
+          card.style.removeProperty("transform");
+        });
+
+        newlyShownCards.forEach((card) => {
+          card.classList.remove("is-entering");
+        });
+      });
+
+      appliedFilter = category;
+      pendingFilter = null;
+      updateFilterStatus(category);
+    }
+
+    if (leavingCards.length > 0) {
+      filterTimer = window.setTimeout(finishAnimatedFilter, 180);
+    } else {
+      finishAnimatedFilter();
+    }
+
+    // The variable is kept explicit to make the filter stages easy to explain.
+    void enteringCards;
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      selectProjectFilter(button.dataset.filter);
+    });
+  });
+
+  // Accessible FAQ accordion. Each answer opens and closes independently.
+  const faqButtons = document.querySelectorAll(".faq-question");
+
+  faqButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+      const answer = document.getElementById(button.getAttribute("aria-controls"));
+
+      button.setAttribute("aria-expanded", String(!isExpanded));
+
+      if (answer) {
+        answer.hidden = isExpanded;
+      }
+    });
+  });
+
+  // Event cards open one native, keyboard-friendly dialog.
+  const eventDialog = document.querySelector("#event-dialog");
+  const eventDialogTitle = document.querySelector("#event-dialog-title");
+  const eventDialogDescription = document.querySelector("#event-dialog-description");
+  const eventNameInput = document.querySelector("#demo-event-name");
+  const attendeeNameInput = document.querySelector("#demo-attendee-name");
+  const demoForm = document.querySelector("#demo-registration-form");
+  const demoFormStatus = document.querySelector("#demo-form-status");
+  const closeDialogButton = document.querySelector(".event-dialog__close");
+  let lastDialogTrigger = null;
+
+  function closeEventDialog() {
+    if (!eventDialog) return;
+
+    if (typeof eventDialog.close === "function" && eventDialog.open) {
+      eventDialog.close();
+    } else {
+      eventDialog.removeAttribute("open");
+    }
+  }
+
+  document.querySelectorAll("[data-open-event]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!eventDialog) return;
+
+      lastDialogTrigger = button;
+
+      const title = button.dataset.eventTitle || "Community event";
+      const date = button.dataset.eventDate || "Sample date";
+      const location = button.dataset.eventLocation || "Sample venue";
+      const description = button.dataset.eventDescription || "Event details are a demo.";
+
+      eventDialogTitle.textContent = title;
+      eventDialogDescription.textContent =
+        `${description} Sample date: ${date}. Sample venue: ${location}. This form does not send information.`;
+      eventNameInput.value = title;
+      demoFormStatus.textContent = "";
+      demoForm.reset();
+      eventNameInput.value = title;
+
+      if (typeof eventDialog.showModal === "function") {
+        eventDialog.showModal();
+      } else {
+        eventDialog.setAttribute("open", "");
+      }
+
+      attendeeNameInput.focus();
+    });
+  });
+
+  if (closeDialogButton) {
+    closeDialogButton.addEventListener("click", closeEventDialog);
+  }
+
+  if (eventDialog) {
+    eventDialog.addEventListener("click", (event) => {
+      if (event.target === eventDialog) {
+        closeEventDialog();
+      }
+    });
+
+    eventDialog.addEventListener("close", () => {
+      if (lastDialogTrigger && document.contains(lastDialogTrigger)) {
+        lastDialogTrigger.focus();
+      }
+    });
+  }
+
+  if (demoForm) {
+    demoForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      demoFormStatus.textContent =
+        "Thanks — this is a local demo only. No details were sent or stored.";
+    });
+  }
+
+</script>
